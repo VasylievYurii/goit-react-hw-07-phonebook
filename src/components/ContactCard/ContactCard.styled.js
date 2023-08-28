@@ -42,7 +42,7 @@ export const ContactName = styled.p`
   font-weight: 500;
 `;
 
-export const ContactNumber = styled.p`
+export const ContactPhone = styled.p`
   color: white;
   font-size: 1.2em;
   font-weight: 500;

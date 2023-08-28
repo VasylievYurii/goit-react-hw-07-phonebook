@@ -9,10 +9,10 @@ import {
   DiPhonegapSvg,
 } from './App.styled';
 import { useSelector } from 'react-redux';
+import { getContacts } from 'redux/selectors';
 
 export function App() {
-  const contacts = useSelector(state => state.contacts);
-
+  const contacts = useSelector(getContacts);
   return (
     <>
       <Section>
