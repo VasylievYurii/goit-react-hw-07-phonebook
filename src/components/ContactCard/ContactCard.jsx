@@ -10,8 +10,8 @@ import {
   RiDeleteBinLineSvg,
   ContactUl,
 } from './ContactCard.styled';
-import { useEffect } from 'react';
-import { fetchContacts, deleteContact } from 'services/mockApi';
+
+import { deleteContact } from 'services/mockApi';
 
 const getVisibleContacts = (contacts, statusFilter) => {
   if (statusFilter) {
@@ -32,10 +32,6 @@ const Contact = () => {
 
   const dispatch = useDispatch();
   const handleDelete = id => dispatch(deleteContact(id));
-
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
 
   return (
     <ContactUl>
