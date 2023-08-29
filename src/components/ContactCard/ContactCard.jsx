@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getContacts, getStatusFilter } from 'redux/selectors';
-// import { deleteContact } from 'redux/contactsSlice';
 import {
   ContactList,
   ContactCard,
@@ -11,7 +10,7 @@ import {
   ContactUl,
 } from './ContactCard.styled';
 
-import { deleteContact } from 'services/mockApi';
+import { deleteContact } from 'redux/operations';
 
 const getVisibleContacts = (contacts, statusFilter) => {
   if (statusFilter) {

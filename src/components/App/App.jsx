@@ -10,12 +10,14 @@ import {
   DiPhonegapSvg,
 } from './App.styled';
 import { useSelector, useDispatch } from 'react-redux';
-import { getContacts } from 'redux/selectors';
-import { fetchContacts } from 'services/mockApi';
+import { getContacts, getIsLoading, getError } from 'redux/selectors';
+import { fetchContacts } from 'redux/operations';
 
 export function App() {
   const dispatch = useDispatch();
   const contacts = useSelector(getContacts);
+  const isLoading = useSelector(getIsLoading);
+  const error = useSelector(getError);
 
   useEffect(() => {
     dispatch(fetchContacts());
@@ -30,6 +32,7 @@ export function App() {
             Phonebook
           </Title>
           <FormPhonebook />
+          {isLoading && !error && <b>Request in progress...</b>}
           {contacts.length === 0 ? null : (
             <>
               <TitleContacts>Contacts</TitleContacts>

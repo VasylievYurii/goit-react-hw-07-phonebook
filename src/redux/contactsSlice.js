@@ -1,69 +1,63 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Notiflix from 'notiflix';
 import { contactsInitialState } from './initialState';
-import { fetchContacts, createContact, deleteContact } from 'services/mockApi';
+import { fetchContacts, addContact, deleteContact } from 'redux/operations';
+
+const handlePending = state => {
+  state.isLoading = true;
+};
+
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
 
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState: contactsInitialState,
-  extraReducers: {
-    [fetchContacts.pending](state, action) {
-      state.isLoading = true;
-    },
-    [fetchContacts.fulfilled](state, action) {
-      state.isLoading = false;
-      state.error = null;
-      state.items = action.payload;
-    },
-    [fetchContacts.rejected](state, action) {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
+  extraReducers: builder => {
+    console.log('builder', builder);
+    builder
+      .addCase(fetchContacts.pending, handlePending)
+      .addCase(fetchContacts.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = null;
+        state.items = payload;
+      })
+      .addCase(fetchContacts.rejected, handleRejected)
+      .addCase(addContact.pending, handlePending)
+      .addCase(addContact.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = null;
 
-    [createContact.pending](state, action) {
-      state.isLoading = true;
-    },
-    [createContact.fulfilled](state, action) {
-      state.isLoading = false;
-      state.error = null;
-
-      const normalizedNameFilter = action.payload.name.toLowerCase();
-      const isFoundName = !state.items.find(contact =>
-        contact.name.toLowerCase().includes(normalizedNameFilter)
-      );
-      const isFoundPhone = !state.items.find(contact =>
-        contact.phone.includes(action.payload.phone)
-      );
-      const isFound = isFoundName && isFoundPhone;
-
-      if (isFound) {
-        state.items.push(action.payload);
-      } else {
-        Notiflix.Notify.failure(
-          `This contact is already in your contact list.`
+        const normalizedNameFilter = payload.name.toLowerCase();
+        const isFoundName = !state.items.find(contact =>
+          contact.name.toLowerCase().includes(normalizedNameFilter)
         );
-      }
-    },
-    [createContact.rejected](state, action) {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
+        const isFoundPhone = !state.items.find(contact =>
+          contact.phone.includes(payload.phone)
+        );
+        const isFound = isFoundName && isFoundPhone;
 
-    [deleteContact.pending](state, action) {
-      state.isLoading = true;
-    },
-    [deleteContact.fulfilled](state, action) {
-      state.isLoading = false;
-      state.error = null;
-      const index = state.items.findIndex(
-        contact => contact.id === action.payload.id
-      );
-      state.items.splice(index, 1);
-    },
-    [deleteContact.rejected](state, action) {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
+        if (isFound) {
+          state.items.unshift(payload);
+        } else {
+          Notiflix.Notify.failure(
+            `This contact is already in your contact list.`
+          );
+        }
+      })
+      .addCase(addContact.rejected, handleRejected)
+      .addCase(deleteContact.pending, handlePending)
+      .addCase(deleteContact.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = null;
+        const index = state.items.findIndex(
+          contact => contact.id === payload.id
+        );
+        state.items.splice(index, 1);
+      })
+      .addCase(deleteContact.rejected, handleRejected);
   },
 });
 

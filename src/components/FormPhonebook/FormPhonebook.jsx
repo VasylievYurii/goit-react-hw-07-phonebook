@@ -10,7 +10,7 @@ import {
   FieldForm,
 } from './FormPhonebook.styled';
 import { useDispatch } from 'react-redux';
-import { createContact } from 'services/mockApi';
+import { addContact } from 'redux/operations';
 
 const initialValues = {
   name: '',
@@ -23,7 +23,7 @@ const FormPhonebook = () => {
   const inputPhoneId = nanoid();
 
   const handleSubmit = (values, { resetForm }) => {
-    dispatch(createContact(values));
+    dispatch(addContact(values));
     resetForm();
   };
 
